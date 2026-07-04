@@ -1,0 +1,116 @@
+{
+  "search": {
+    "zip": "77345",
+    "radius_miles": 250,
+    "max_price_usd": 20000,
+    "max_mileage": 150000,
+    "min_year": 2010,
+    "title_status": ["clean"],
+    "max_owners": 2
+  },
+  "towing": {
+    "min_capacity_lbs": 8000,
+    "require_verified_tow_package": true,
+    "tow_package_checks": [
+      "factory_hitch",
+      "transmission_cooler",
+      "brake_controller_wiring"
+    ],
+    "unverified_action": "flag_inspect_before_drive"
+  },
+  "target_vehicles": [
+    {
+      "make": "Toyota",
+      "model": "Tundra",
+      "years": [2010, 2016],
+      "required_engine": "5.7L V8",
+      "engine_codes": ["3UR-FE"],
+      "notes": "Highest reliability; expect higher mileage at this price point"
+    },
+    {
+      "make": "Ford",
+      "model": "F-150",
+      "years": [2011, 2017],
+      "required_engine": ["5.0L V8", "3.5L EcoBoost"],
+      "exclude_engines": ["3.7L V6", "2.7L EcoBoost without tow pkg"],
+      "notes": "Largest inventory pool; verify EcoBoost maintenance history"
+    },
+    {
+      "make": "Chevrolet",
+      "model": "Silverado 1500",
+      "years": [2012, 2016],
+      "required_engine": "5.3L V8",
+      "notes": "Best price-per-mile value in segment"
+    },
+    {
+      "make": "GMC",
+      "model": "Sierra 1500",
+      "years": [2012, 2016],
+      "required_engine": "5.3L V8",
+      "notes": "Same platform as Silverado, sometimes cheaper"
+    },
+    {
+      "make": "Ram",
+      "model": "1500",
+      "years": [2013, 2017],
+      "required_engine": "5.7L HEMI",
+      "notes": "Often cheapest of group; check for coil spring rear suspension condition"
+    }
+  ],
+  "exclusions": {
+    "models": ["Wrangler", "Tacoma", "Colorado", "Ranger", "Frontier"],
+    "reasons": "Below 8000 lb towing floor or excluded per primary towing mission",
+    "salvage_or_rebuilt_title": true,
+    "flood_history": true,
+    "commercial_fleet_over_3_owners": true
+  },
+  "scoring": {
+    "weights": {
+      "price_vs_market_comps": 0.35,
+      "days_on_lot_over_45": 0.20,
+      "price_drop_history": 0.15,
+      "single_owner": 0.10,
+      "verified_tow_package": 0.15,
+      "service_records_available": 0.05
+    },
+    "flags_not_scored": {
+      "four_wheel_drive": "Display as badge; do not let 4x4 premium bury good 4x2 deals",
+      "flood_region_history": "Houston-area trucks: flag any Harvey-era (2017) title events"
+    }
+  },
+  "state": {
+    "database": "sqlite",
+    "db_file": "seen_listings.db",
+    "dedupe_key": "vin",
+    "track_price_changes": true
+  },
+  "notifications": {
+    "channel": "email",
+    "frequency": "daily_digest",
+    "sort_by": "score_desc",
+    "max_listings_per_digest": 10,
+    "immediate_alert_threshold_score": 0.85
+  },
+  "data_sources": {
+    "primary": {
+      "name": "MarketCheck API",
+      "type": "api",
+      "url": "https://www.marketcheck.com/apis",
+      "notes": "Free tier available; VIN-level data, days-on-lot, price history"
+    },
+    "fallback": {
+      "name": "AutoTempest search scrape",
+      "type": "scrape",
+      "notes": "Aggregates CarGurus, Cars.com, Autotrader; respect robots.txt and rate limits"
+    },
+    "excluded": {
+      "sources": ["Facebook Marketplace", "Craigslist"],
+      "reason": "ToS prohibits scraping; use native saved-search alerts manually"
+    }
+  },
+  "schedule": {
+    "run_frequency": "daily",
+    "run_time_local": "06:00",
+    "timezone": "America/Chicago"
+  }
+}
