@@ -1,4 +1,8 @@
 __pycache__/
 *.pyc
-*.db
 digests/
+
+# seen_listings.db is tracked on purpose: the daily digest trigger commits it
+# after each run so dedupe/price-history state survives environment rebuilds.
+*.db
+!seen_listings.db
